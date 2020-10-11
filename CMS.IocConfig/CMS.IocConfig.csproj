@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.8" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="3.1.8" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="3.1.8" />
+    <PackageReference Include="DNTScheduler.Core" Version="1.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CMS.DataLayer.InMemoryDatabase\CMS.DataLayer.InMemoryDatabase.csproj" />
+    <ProjectReference Include="..\CMS.DataLayer.Mssql\CMS.DataLayer.Mssql.csproj" />
+    <ProjectReference Include="..\CMS.DataLayer.SqlLite\CMS.DataLayer.Sqlite.csproj" />
+    <ProjectReference Include="..\CMS.Entities\CMS.Entities.csproj" />
+    <ProjectReference Include="..\CMS.ServiceLayer\CMS.ServiceLayer.csproj" />
+    <ProjectReference Include="..\CMS.ViewModel\CMS.ViewModel.csproj" />
+  </ItemGroup>
+
+</Project>

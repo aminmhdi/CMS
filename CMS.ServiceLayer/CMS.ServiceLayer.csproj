@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="DNTScheduler.Core" Version="1.1.0" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="3.1.8" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CMS.DataLayer\CMS.DataLayer.csproj" />
+    <ProjectReference Include="..\CMS.Entities\CMS.Entities.csproj" />
+    <ProjectReference Include="..\CMS.ViewModel\CMS.ViewModel.csproj" />
+    <ProjectReference Include="..\DNTCommon.Web.Core\DNTCommon.Web.Core.csproj" />
+  </ItemGroup>
+
+</Project>
