@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using CMS.Entities.AuditableEntity;
+using CMS.Entities.Common.Enums;
 using Microsoft.AspNetCore.Identity;
 
 namespace CMS.Entities.Identity
@@ -45,10 +46,8 @@ namespace CMS.Entities.Identity
 
         public string Location { set; get; }
 
-        [Display(Name = "فعال")]
-        public bool IsActive { get; set; } = true;
+        public Status Status { get; set; }
 
-        [Display(Name = "سیستمی")]
         public bool IsSystemUser { get; set; }
 
         [NotMapped]

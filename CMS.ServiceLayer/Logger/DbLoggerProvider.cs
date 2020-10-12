@@ -92,18 +92,14 @@ namespace CMS.ServiceLayer.Logger
 
                 // We need a separate context for the logger to call its SaveChanges several times,
                 // without using the current request's context and changing its internal state.
-                using (var scope = _serviceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope())
+                using var scope = _serviceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope();
+                using var context = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
+                foreach (var item in items)
                 {
-                    using (var context = scope.ServiceProvider.GetRequiredService<IUnitOfWork>())
-                    {
-                        foreach (var item in items)
-                        {
-                            var addedEntry = context.Set<AppLogItem>().Add(item.AppLogItem);
-                            addedEntry.SetAddedShadowProperties(item.Props);
-                        }
-                        await context.SaveChangesAsync(cancellationToken);
-                    }
+                    var addedEntry = context.Set<AppLogItem>().Add(item.AppLogItem);
+                    addedEntry.SetAddedShadowProperties(item.Props);
                 }
+                await context.SaveChangesAsync(cancellationToken);
             }
             catch
             {

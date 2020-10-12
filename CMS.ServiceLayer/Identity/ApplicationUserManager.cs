@@ -175,8 +175,7 @@ namespace CMS.ServiceLayer.Identity
 
         public async Task<User> GetCurrentUserAsync()
         {
-            return _currentUserInScope ??
-                (_currentUserInScope = await GetUserAsync(_contextAccessor.HttpContext.User));
+            return _currentUserInScope ??= await GetUserAsync(_contextAccessor.HttpContext.User);
         }
 
         public string GetCurrentUserId()

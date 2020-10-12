@@ -4,9 +4,10 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using CMS.DataLayer.Context;
+using CMS.Entities.AuditableEntity;
+using CMS.Entities.Common.Enums;
 using CMS.Entities.Identity;
 using CMS.ServiceLayer.Contracts.Identity;
-using DNTPersianUtils.Core;
 using Microsoft.EntityFrameworkCore;
 
 namespace CMS.ServiceLayer.Identity
@@ -46,7 +47,7 @@ namespace CMS.ServiceLayer.Identity
             var day = now.Day;
             var month = now.Month;
             return _users.AsNoTracking()
-                         .Where(user => user.BirthDate != null && user.IsActive
+                         .Where(user => user.BirthDate != null && user.Status == Status.Active
                                         && user.BirthDate.Value.Day == day
                                         && user.BirthDate.Value.Month == month)
                          .ToListAsync();

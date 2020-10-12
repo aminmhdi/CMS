@@ -4,14 +4,16 @@ using CMS.DataLayer.Mssql;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CMS.DataLayer.Mssql.Migrations
 {
     [DbContext(typeof(MsSqlDbContext))]
-    partial class MsSqlDbContextModelSnapshot : ModelSnapshot
+    [Migration("20201012081904_sample1")]
+    partial class sample1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -177,9 +179,7 @@ namespace CMS.DataLayer.Mssql.Migrations
                         .HasMaxLength(256);
 
                     b.Property<byte>("Status")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("tinyint")
-                        .HasDefaultValue((byte)1);
+                        .HasColumnType("tinyint");
 
                     b.HasKey("Id");
 
@@ -345,9 +345,7 @@ namespace CMS.DataLayer.Mssql.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<byte>("Status")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("tinyint")
-                        .HasDefaultValue((byte)1);
+                        .HasColumnType("tinyint");
 
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("bit");
@@ -645,9 +643,7 @@ namespace CMS.DataLayer.Mssql.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<byte>("Status")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("tinyint")
-                        .HasDefaultValue((byte)1);
+                        .HasColumnType("tinyint");
 
                     b.Property<string>("Title")
                         .HasColumnType("nvarchar(50)")

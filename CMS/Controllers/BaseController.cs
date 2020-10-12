@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CMS.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[Action]")]
     public class BaseController : ControllerBase
     {
         public readonly ISharedResource SharedResource;
@@ -18,6 +18,21 @@ namespace CMS.Controllers
         protected string GetHeaderValue(HttpContext httpContext, string key)
         {
             return !httpContext.Request.Headers.TryGetValue(key, out var keys) ? null : keys.First();
+        }
+
+        protected virtual OkObjectResult BaseOk()
+        {
+            return Ok(SharedResource.GetString("Ok"));
+        }
+
+        protected virtual BadRequestObjectResult BaseBadRequest()
+        {
+            return BadRequest(SharedResource.GetString("BadRequest"));
+        }
+
+        protected virtual NotFoundObjectResult BaseNotFound()
+        {
+            return NotFound(SharedResource.GetString("NotFound"));
         }
     }
 }

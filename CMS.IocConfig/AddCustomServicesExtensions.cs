@@ -3,7 +3,9 @@ using System.Security.Principal;
 using CMS.DataLayer.Context;
 using CMS.Entities.Identity;
 using CMS.ServiceLayer.Contracts.Identity;
+using CMS.ServiceLayer.Contracts.Sample;
 using CMS.ServiceLayer.Identity;
+using CMS.ServiceLayer.Sample;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -55,6 +57,8 @@ namespace CMS.IocConfig
             services.AddScoped<IUserStatService, UserStatService>();
 
             services.AddScoped<ISecurityTrimmingService, SecurityTrimmingService>();
+
+            services.AddScoped<ISampleService, SampleService>();
 
             return services;
         }

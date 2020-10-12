@@ -88,7 +88,7 @@ namespace DNTCommon.Web.Core
                     currentController = new MvcControllerViewModel
                     {
                         AreaName = controllerTypeInfo.GetCustomAttribute<AreaAttribute>()?.RouteValue,
-                        ControllerAttributes = getAttributes(controllerTypeInfo),
+                        ControllerAttributes = GetAttributes(controllerTypeInfo),
                         ControllerDisplayName =
                            controllerTypeInfo.GetCustomAttribute<DisplayNameAttribute>()?.DisplayName ??
                            controllerTypeInfo.GetCustomAttribute<DisplayAttribute>()?.Name,
@@ -106,7 +106,7 @@ namespace DNTCommon.Web.Core
                     ActionDisplayName =
                       actionMethodInfo.GetCustomAttribute<DisplayNameAttribute>()?.DisplayName ??
                       actionMethodInfo.GetCustomAttribute<DisplayAttribute>()?.Name,
-                    ActionAttributes = getAttributes(actionMethodInfo),
+                    ActionAttributes = GetAttributes(actionMethodInfo),
                     IsSecuredAction = isSecuredAction(controllerTypeInfo, actionMethodInfo)
                 });
             }
@@ -140,7 +140,7 @@ namespace DNTCommon.Web.Core
             return getter.Value;
         }
 
-        private static List<Attribute> getAttributes(MemberInfo actionMethodInfo)
+        private static List<Attribute> GetAttributes(MemberInfo actionMethodInfo)
         {
             return actionMethodInfo.GetCustomAttributes(inherit: true)
                                    .Where(attribute =>

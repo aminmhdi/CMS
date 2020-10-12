@@ -32,14 +32,14 @@ namespace CMS.Controllers
         {
             try
             {
-                if (!id.HasValue) return BadRequest(SharedResource.GetString("BadRequest"));
+                if (!id.HasValue) return base.BadRequest();
 
                 var user = await _userService.Users.FirstOrDefaultAsync(q=>q.Id == id.Value);
 
                 if (user != null)
                     return Ok(new {user.UserName});
 
-                return NotFound(SharedResource.GetString("NotFound"));
+                return BaseNotFound();
             }
             catch (Exception ex)
             {

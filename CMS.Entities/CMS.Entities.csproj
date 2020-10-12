@@ -14,9 +14,4 @@
     <ProjectReference Include="..\CMS.Common\CMS.Common.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Common\" />
-    <Folder Include="Logger\" />
-  </ItemGroup>
-
 </Project>
