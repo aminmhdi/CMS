@@ -17,11 +17,8 @@ namespace CMS.IocConfig
         {
             var siteSettings = GetSiteSettings(services);
 
-            services.AddIdentityOptions(siteSettings);
             services.AddConfiguredDbContext(siteSettings);
             services.AddCustomServices();
-            services.AddDynamicPermissions();
-            services.AddCustomDataProtection(siteSettings);
 
             services.AddDNTCommonWeb();
 

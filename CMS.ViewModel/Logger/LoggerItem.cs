@@ -1,5 +1,5 @@
 ﻿using CMS.Entities.AuditableEntity;
-using CMS.Entities.Identity;
+using CMS.Entities.Log;
 
 namespace CMS.ViewModel.Logger
 {

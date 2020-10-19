@@ -1,7 +1,6 @@
-﻿namespace ORS.ViewModels.Identity.Settings
+﻿namespace CMS.ViewModel.Settings
 {
-
-    public class SQLite
+    public class SqLite
     {
         public string ApplicationDbContextConnection { get; set; }
     }

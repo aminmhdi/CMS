@@ -6,7 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using CMS.DataLayer.Context;
 using CMS.Entities.AuditableEntity;
-using CMS.Entities.Identity;
+using CMS.Entities.Log;
 using CMS.ViewModel.Logger;
 using CMS.ViewModel.Settings;
 using Microsoft.Extensions.DependencyInjection;

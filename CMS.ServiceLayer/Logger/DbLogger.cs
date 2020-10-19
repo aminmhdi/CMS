@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text.Json;
 using CMS.Entities.AuditableEntity;
-using CMS.Entities.Identity;
+using CMS.Entities.Log;
 using CMS.ViewModel.Logger;
 using CMS.ViewModel.Settings;
 using Microsoft.AspNetCore.Http;

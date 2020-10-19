@@ -16,6 +16,6 @@ namespace CMS.ServiceLayer.Contracts.Identity
         /// </summary>
         void SeedData();
 
-        Task<IdentityResult> SeedDatabaseWithAdminUserAsync();
+        Task<bool> SeedDatabaseAsync();
     }
 }

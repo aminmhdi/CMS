@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using CMS.Common.IdentityToolkit;
-using CMS.Entities.Identity;
+using CMS.Entities.Log;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;

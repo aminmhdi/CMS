@@ -6,7 +6,6 @@ using CMS.Common.GuardToolkit;
 using CMS.DataLayer.Context;
 using CMS.Entities.AuditableEntity;
 using CMS.Entities.Common.Enums;
-using CMS.ServiceLayer.Contracts.Identity;
 using CMS.ServiceLayer.Contracts.Sample;
 using CMS.ViewModel.Sample;
 using Microsoft.AspNetCore.Http;
@@ -165,11 +164,6 @@ namespace CMS.ServiceLayer.Sample
             return viewModel;
         }
 
-        public async Task<bool> Exists(int id)
-        {
-            return await _sample.AnyAsync(e => e.Id == id);
-        }
-
         #endregion
 
         #region Delete
@@ -190,6 +184,19 @@ namespace CMS.ServiceLayer.Sample
             receipt.Status = Status.Deleted;
             _sample.Update(receipt);
             return await _uow.SaveChangesAsync();
+        }
+
+        #endregion
+
+        #region Exists
+        public async Task<bool> Exists()
+        {
+            return await _sample.AnyAsync();
+        }
+
+        public async Task<bool> Exists(int id)
+        {
+            return await _sample.AnyAsync(e => e.Id == id);
         }
 
         #endregion

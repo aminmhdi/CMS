@@ -9,6 +9,7 @@ namespace CMS.ServiceLayer.Contracts.Sample
         Task<int> Create(SampleViewModel viewModel);
         Task<int> Edit(SampleViewModel viewModel);
         Task<SampleViewModel> Get(int id);
+        Task<bool> Exists();
         Task<bool> Exists(int id);
         Task<int> Delete(int id);
     }

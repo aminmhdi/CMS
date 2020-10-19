@@ -13,7 +13,6 @@
     <ProjectReference Include="..\CMS.DataLayer\CMS.DataLayer.csproj" />
     <ProjectReference Include="..\CMS.Entities\CMS.Entities.csproj" />
     <ProjectReference Include="..\CMS.ViewModel\CMS.ViewModel.csproj" />
-    <ProjectReference Include="..\DNTCommon.Web.Core\DNTCommon.Web.Core.csproj" />
   </ItemGroup>
 
 </Project>

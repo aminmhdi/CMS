@@ -7,10 +7,9 @@ using CMS.Common.EFCoreToolkit;
 using CMS.Common.GuardToolkit;
 using CMS.DataLayer.Mappings;
 using CMS.Entities.AuditableEntity;
-using CMS.Entities.Identity;
+using CMS.Entities.Log;
 using CMS.ViewModel.Settings;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
@@ -19,7 +18,7 @@ using Microsoft.Extensions.Options;
 
 namespace CMS.DataLayer.Context
 {
-    public class ApplicationDbContext : IdentityDbContext<User, Role, int, UserClaim, UserRole, UserLogin, RoleClaim, UserToken>, IUnitOfWork
+    public class ApplicationDbContext : DbContext, IUnitOfWork
     {
         #region Constructor
 
@@ -178,8 +177,6 @@ namespace CMS.DataLayer.Context
         #region Enitities
 
         public virtual DbSet<AppLogItem> AppLogItems { get; set; }
-        public virtual DbSet<AppSqlCache> AppSqlCache { get; set; }
-        public virtual DbSet<AppDataProtectionKey> AppDataProtectionKeys { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder builder)
@@ -189,7 +186,7 @@ namespace CMS.DataLayer.Context
 
             // we can't use constructor injection anymore, because we are using the `AddDbContextPool<>`
             // Adds all of the ASP.NET Core Identity related mappings at once.
-            builder.AddCustomIdentityMappings(this.GetService<IOptionsSnapshot<AppSettings>>()?.Value);
+            builder.AddCustomMappings(this.GetService<IOptionsSnapshot<AppSettings>>()?.Value);
 
             // Custom application mappings
             builder.SetDecimalPrecision();
