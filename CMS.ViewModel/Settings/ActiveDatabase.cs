@@ -2,9 +2,7 @@
 {
     public enum ActiveDatabase
     {
-        LocalDb,
         SqlServer,
-        InMemoryDatabase,
-        SqLite
+        MongoDb
     }
 }

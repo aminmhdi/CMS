@@ -32,7 +32,7 @@ namespace ORS.DataLayer.MSSQL
             services.Configure<AppSettings>(options => configuration.Bind(options));
 
             var siteSettings = services.BuildServiceProvider().GetRequiredService<IOptionsSnapshot<AppSettings>>();
-			siteSettings.Value.ActiveDatabase = ActiveDatabase.LocalDb;
+			//siteSettings.Value.ActiveDatabase = ActiveDatabase.LocalDb;
 
             services.AddEntityFrameworkSqlServer(); // It's added to access services from the dbcontext, remove it if you are using the normal `AddDbContext` and normal constructor dependency injection.
             var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();

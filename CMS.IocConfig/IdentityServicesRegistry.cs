@@ -1,7 +1,6 @@
 ﻿using System;
 using CMS.ServiceLayer.SchedulerTask;
 using CMS.ViewModel.Settings;
-using DNTCommon.Web.Core;
 using DNTScheduler.Core;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -19,8 +18,6 @@ namespace CMS.IocConfig
 
             services.AddConfiguredDbContext(siteSettings);
             services.AddCustomServices();
-
-            services.AddDNTCommonWeb();
 
             services.AddDNTScheduler(options =>
             {

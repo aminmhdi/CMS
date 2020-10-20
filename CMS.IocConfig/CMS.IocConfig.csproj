@@ -14,13 +14,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\CMS.DataLayer.InMemoryDatabase\CMS.DataLayer.InMemoryDatabase.csproj" />
-    <ProjectReference Include="..\CMS.DataLayer.Mssql\CMS.DataLayer.Mssql.csproj" />
-    <ProjectReference Include="..\CMS.DataLayer.SqlLite\CMS.DataLayer.Sqlite.csproj" />
     <ProjectReference Include="..\CMS.Entities\CMS.Entities.csproj" />
     <ProjectReference Include="..\CMS.ServiceLayer\CMS.ServiceLayer.csproj" />
     <ProjectReference Include="..\CMS.ViewModel\CMS.ViewModel.csproj" />
-    <ProjectReference Include="..\DNTCommon.Web.Core\DNTCommon.Web.Core.csproj" />
   </ItemGroup>
 
 </Project>

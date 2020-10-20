@@ -1,5 +1,4 @@
 using CMS.IocConfig;
-using CMS.ServiceLayer.Logger;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -27,7 +26,6 @@ namespace CMS
                         if (hostingContext.HostingEnvironment.IsDevelopment())
                             logging.AddConsole();
 
-                        logging.AddDbLogger(); // You can change its Log Level using the `appsettings.json` file -> Logging -> LogLevel -> Default
                         logging.AddConfiguration(hostingContext.Configuration.GetSection("Logging"));
                     }).UseStartup<Startup>();
                 });

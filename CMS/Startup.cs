@@ -4,7 +4,6 @@ using CMS.IocConfig;
 using CMS.Middlewares;
 using CMS.Swagger;
 using CMS.ViewModel.Settings;
-using DNTCommon.Web.Core;
 using DNTScheduler.Core;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -35,8 +34,6 @@ namespace CMS
 
             services.AddMvc(options =>
             {
-                options.UseYeKeModelBinder();
-                options.UsePersianDateModelBinder();
                 options.UseCommaSeparatorModelBinder();
                 //options.AllowEmptyInputInBodyModelBinding = true
             });

@@ -59,14 +59,11 @@ namespace CMS.DataLayer.Mssql
 
             switch (appSettingsValue.ActiveDatabase)
             {
-                case ActiveDatabase.LocalDb:
-                    var attachDbFilename = appSettingsValue.ConnectionStrings.LocalDb.AttachDbFilename;
-                    var attachDbFilenamePath = Path.Combine(ServerInfo.GetAppDataFolderPath(), attachDbFilename);
-                    var localDbInitialCatalog = appSettingsValue.ConnectionStrings.LocalDb.InitialCatalog;
-                    return $@"Data Source=(LocalDB)\MSSQLLocalDB;Initial Catalog={localDbInitialCatalog};AttachDbFilename={attachDbFilenamePath};Integrated Security=True;MultipleActiveResultSets=True;";
-
                 case ActiveDatabase.SqlServer:
                     return appSettingsValue.ConnectionStrings.SqlServer.ApplicationDbContextConnection;
+
+                case ActiveDatabase.MongoDb:
+                    return appSettingsValue.ConnectionStrings.MongoDb.Connection;
 
                 default:
                     throw new NotSupportedException("Please set the ActiveDatabase in appsettings.json file to `LocalDb` or `SqlServer`.");

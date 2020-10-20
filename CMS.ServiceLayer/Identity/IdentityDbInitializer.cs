@@ -55,14 +55,10 @@ namespace CMS.ServiceLayer.Identity
         public void Initialize()
         {
             using var serviceScope = _scopeFactory.CreateScope();
-            using var context = serviceScope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-            if (_seedOptions.Value.ActiveDatabase == ActiveDatabase.InMemoryDatabase)
+            var context = serviceScope.ServiceProvider.GetRequiredService<IMongoDbContext>();
+            if (context == null)
             {
-                context.Database.EnsureCreated();
-            }
-            else
-            {
-                context.Database.Migrate();
+                throw new Exception("Mongo db context is null");
             }
         }
 
@@ -93,8 +89,8 @@ namespace CMS.ServiceLayer.Identity
 
             const string thisMethodName = nameof(SeedDatabaseAsync);
 
-            var adminUser = await _sampleService.Exists();
-            if (adminUser)
+            var sampleExists = await _sampleService.Exists();
+            if (sampleExists)
             {
                 _logger.LogInformation($"{thisMethodName}: Sample is already exists.");
                 return true;
@@ -109,11 +105,11 @@ namespace CMS.ServiceLayer.Identity
 
             if (sampleResult <= 0)
             {
-                _logger.LogError($"{thisMethodName}: adminRole CreateAsync failed. {sampleResult}");
+                _logger.LogError($"{thisMethodName}: Sample CreateAsync failed. {sampleResult}");
                 return false;
             }
 
-            _logger.LogInformation($"{thisMethodName}: adminRole already exists.");
+            _logger.LogInformation($"{thisMethodName}: Sample already exists.");
             return true;
         }
     }

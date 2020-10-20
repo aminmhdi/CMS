@@ -1,14 +1,12 @@
 ﻿using System;
-using CMS.DataLayer.InMemoryDatabase;
-using CMS.DataLayer.Mssql;
-using CMS.DataLayer.Sqlite;
+using CMS.DataLayer.Context;
 using CMS.ServiceLayer.Contracts.Identity;
 using CMS.ViewModel.Settings;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace CMS.IocConfig
 {
-    public static class DbContextOptionsExtensions
+    public static class AddDbContextOptionsExtensions
     {
         public static IServiceCollection AddConfiguredDbContext
         (
@@ -18,17 +16,8 @@ namespace CMS.IocConfig
         {
             switch (appSettings.ActiveDatabase)
             {
-                case ActiveDatabase.InMemoryDatabase:
-                    serviceCollection.AddConfiguredInMemoryDbContext(appSettings);
-                    break;
-
-                case ActiveDatabase.LocalDb:
-                case ActiveDatabase.SqlServer:
-                    serviceCollection.AddConfiguredMsSqlDbContext(appSettings);
-                    break;
-
-                case ActiveDatabase.SqLite:
-                    serviceCollection.AddConfiguredSqLiteDbContext(appSettings);
+                case ActiveDatabase.MongoDb:
+                    serviceCollection.AddConfiguredMongoDbContext(appSettings);
                     break;
 
                 default:

@@ -4,13 +4,12 @@ using System.Threading.Tasks;
 using CMS.Common.DateToolkit;
 using CMS.Common.GuardToolkit;
 using CMS.DataLayer.Context;
-using CMS.Entities.AuditableEntity;
 using CMS.Entities.Common.Enums;
 using CMS.ServiceLayer.Contracts.Sample;
 using CMS.ViewModel.Sample;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore;
+using MongoDB.Driver;
 
 namespace CMS.ServiceLayer.Sample
 {
@@ -18,20 +17,17 @@ namespace CMS.ServiceLayer.Sample
     {
         #region Constructor
 
-        private readonly DbSet<Entities.Sample.Sample> _sample;
-        private readonly IUnitOfWork _uow;
+        private readonly IMongoDbContext _mongoDbContext;
         private readonly IHttpContextAccessor _contextAccessor;
 
         public SampleService
         (
-            IUnitOfWork uow,
+            IMongoDbContext mongoDbContext,
             IHttpContextAccessor contextAccessor
         )
         {
-            _uow = uow;
-            _uow.CheckArgumentIsNull(nameof(_uow));
-
-            _sample = _uow.Set<Entities.Sample.Sample>();
+            _mongoDbContext = mongoDbContext;
+            _mongoDbContext.CheckArgumentIsNull(nameof(_mongoDbContext));
 
             _contextAccessor = contextAccessor;
             _contextAccessor.CheckArgumentIsNull(nameof(contextAccessor));
@@ -43,50 +39,50 @@ namespace CMS.ServiceLayer.Sample
 
         public async Task<SampleListViewModel> List(SampleSearchViewModel search)
         {
-            var query = _sample.AsNoTracking().AsQueryable();
-
-            query = query.Where(q => q.Status == Status.Active).AsQueryable();
+            var filter = Builders<Entities.Sample.Sample>.Filter.Where(q => q.Status == Status.Active);
 
             if (search.Id.HasValue)
-                query = query.Where(q => q.Id == search.Id.Value).AsQueryable();
+                filter &= Builders<Entities.Sample.Sample>.Filter.Where(q => q.Id == search.Id.Value);
 
             if (!string.IsNullOrEmpty(search.Title))
-                query = query.Where(q => q.Title.Contains(search.Title)).AsQueryable();
+                filter &= Builders<Entities.Sample.Sample>.Filter.Where(q => q.Title.Contains(search.Title));
 
             if (search.CreateFrom.HasValue)
             {
                 var createFromDateTime = search.CreateFrom.ToDateTimeFromUnix();
-                query = query.Where(q => EF.Property<DateTime>(q, AuditableShadowProperties.CreatedDateTime) >= createFromDateTime).AsQueryable();
+                filter &= Builders<Entities.Sample.Sample>.Filter.Where(q => q.CreateDate >= createFromDateTime);
             }
-
 
             if (search.CreateTo.HasValue)
             {
                 var createToDateTime = search.CreateFrom.ToDateTimeFromUnix();
-                query = query.Where(q => EF.Property<DateTime>(q, AuditableShadowProperties.CreatedDateTime) <= createToDateTime).AsQueryable();
+                filter &= Builders<Entities.Sample.Sample>.Filter.Where(q => q.CreateDate <= createToDateTime);
             }
 
-            query = search.OrderBy switch
+            var sort = search.OrderBy switch
             {
                 "Id" => search.Order == SortOrder.Descending
-                    ? query.OrderByDescending(q => q.Id).AsQueryable()
-                    : query.OrderBy(q => q.Id).AsQueryable(),
+                    ? Builders<Entities.Sample.Sample>.Sort.Descending(q => q.Id)
+                    : Builders<Entities.Sample.Sample>.Sort.Ascending(q => q.Id),
                 "CreateDate" => search.Order == SortOrder.Descending
-                    ? query.OrderByDescending(q => EF.Property<DateTime>(q, AuditableShadowProperties.CreatedDateTime)).AsQueryable()
-                    : query.OrderBy(q => EF.Property<DateTime>(q, AuditableShadowProperties.CreatedDateTime)).AsQueryable(),
-                _ => query.OrderByDescending(x => x.Id)
+                    ? Builders<Entities.Sample.Sample>.Sort.Descending(q => q.CreateDate)
+                    : Builders<Entities.Sample.Sample>.Sort.Ascending(q => q.CreateDate),
+                _ => Builders<Entities.Sample.Sample>.Sort.Descending(x => x.Id)
             };
 
             var offset = (search.PageNumber - 1) * search.PageSize;
 
-            search.Total = query.Count();
-            search.TotalPage = (int) Math.Ceiling((decimal) search.Total / search.PageSize);
-
-
-            var list = await query
+            var list = await _mongoDbContext.Sample
+                .Find(filter)
+                .Sort(sort)
                 .Skip(offset)
-                .Take(search.PageSize)
+                .Limit(search.PageSize)
                 .ToListAsync();
+
+
+            search.Total = await _mongoDbContext.Sample.Find(filter).CountDocumentsAsync();
+            search.TotalPage = (int)Math.Ceiling((decimal)search.Total / search.PageSize);
+
 
             var viewModel = new SampleListViewModel
             {
@@ -118,11 +114,12 @@ namespace CMS.ServiceLayer.Sample
             var model = new Entities.Sample.Sample
             {
                 Title = viewModel.Title,
+                CreateDate = DateTime.Now,
                 Status = Status.Active
             };
 
-            await _sample.AddAsync(model);
-            return await _uow.SaveChangesAsync();
+            await _mongoDbContext.Sample.InsertOneAsync(model);
+            return 1;
         }
 
         #endregion
@@ -134,17 +131,22 @@ namespace CMS.ServiceLayer.Sample
             if (viewModel == null)
                 return 0;
 
-            var model = await _sample.FirstOrDefaultAsync(q => q.Id == viewModel.Id);
+            var model = (await _mongoDbContext.Sample.FindAsync(q => q.Id == viewModel.Id)).FirstOrDefault();
 
             if (model == null)
                 return 0;
 
             model.Id = viewModel.Id;
             model.Title = viewModel.Title;
+            model.UpdateDate = DateTime.Now;
 
-            _sample.Update(model);
+            var updateFilter = Builders<Entities.Sample.Sample>.Filter.Eq(q => q.Id, model.Id);
+            var updateTitle = Builders<Entities.Sample.Sample>.Update.Set(q => q.Title, model.Title);
+            var updateDate = updateTitle.Set(q => q.UpdateDate, model.UpdateDate);
 
-            return await _uow.SaveChangesAsync();
+            await _mongoDbContext.Sample.UpdateOneAsync(updateFilter, updateDate);
+
+            return model.Id;
         }
 
         #endregion
@@ -153,7 +155,7 @@ namespace CMS.ServiceLayer.Sample
 
         public async Task<SampleViewModel> Get(int id)
         {
-            var model = await _sample.FirstOrDefaultAsync(p => p.Id == id);
+            var model = (await _mongoDbContext.Sample.FindAsync(q => q.Id == id)).FirstOrDefault();
 
             var viewModel = new SampleViewModel
             {
@@ -178,25 +180,34 @@ namespace CMS.ServiceLayer.Sample
             //return await _uow.SaveChangesAsync();
 
             // Logical Delete
-            var receipt = await _sample.FindAsync(id);
+            var receipt = (await _mongoDbContext.Sample.FindAsync(q => q.Id == id)).FirstOrDefault();
             if (receipt == null)
                 return 0;
+
             receipt.Status = Status.Deleted;
-            _sample.Update(receipt);
-            return await _uow.SaveChangesAsync();
+            receipt.UpdateDate = DateTime.Now;
+
+            var updateFilter = Builders<Entities.Sample.Sample>.Filter.Eq(q => q.Id, receipt.Id);
+            var updateStatus = Builders<Entities.Sample.Sample>.Update.Set(q => q.Status, receipt.Status);
+            var updateDate = updateStatus.Set(q => q.UpdateDate, receipt.UpdateDate);
+
+            await _mongoDbContext.Sample.UpdateOneAsync(updateFilter, updateDate);
+
+            return receipt.Id;
         }
 
         #endregion
 
         #region Exists
+
         public async Task<bool> Exists()
         {
-            return await _sample.AnyAsync();
+            return await _mongoDbContext.Sample.CountDocumentsAsync(FilterDefinition<Entities.Sample.Sample>.Empty) > 0;
         }
 
         public async Task<bool> Exists(int id)
         {
-            return await _sample.AnyAsync(e => e.Id == id);
+            return (await _mongoDbContext.Sample.FindAsync(q => q.Id == id)).FirstOrDefault() != null;
         }
 
         #endregion
