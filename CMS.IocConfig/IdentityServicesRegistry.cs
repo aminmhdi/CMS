@@ -19,6 +19,8 @@ namespace CMS.IocConfig
             services.AddConfiguredDbContext(siteSettings);
             services.AddCustomServices();
 
+            services.AddSingleton(new ServiceLocator(services));
+
             services.AddDNTScheduler(options =>
             {
                 options.AddScheduledTask<SchedulerTaskService>

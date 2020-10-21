@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using CMS.IocConfig;
+using CMS.ServiceLayer.Contracts.Sample;
+using Microsoft.AspNetCore.Mvc;
 
 namespace CMS.Controllers
 {
