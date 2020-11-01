@@ -1,6 +1,5 @@
 using System;
 using System.Threading.Tasks;
-using CMS.DataLayer.Context;
 using CMS.IocConfig;
 using CMS.ServiceLayer.Contracts.Sample;
 using CMS.ViewModel.Sample;
@@ -9,7 +8,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.Json;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
-using Microsoft.Extensions.FileProviders.Physical;
 using NUnit.Framework;
 
 namespace CMS.UnitTest
@@ -24,6 +22,7 @@ namespace CMS.UnitTest
         {
             var services = new ServiceCollection();
             var configuration = new ConfigurationBuilder();
+
             configuration.Add(new JsonConfigurationSource
             {
                 FileProvider = new PhysicalFileProvider("D:\\Projects\\CMS\\CMS\\"), 
