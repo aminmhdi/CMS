@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using CMS.Entities.AuditableEntity;
 using CMS.Entities.Common.Enums;
 using MongoDB.Bson;
@@ -7,10 +8,11 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace CMS.Entities.Sample
 {
-    public class Sample : IAuditableEntity
+    [Table("Sample")]
+    public class SampleModel : IAuditableEntity
     {
         [BsonId]
-        [BsonRepresentation(BsonType.Int32)]
+        [BsonRepresentation(BsonType.Int64)]
         public int Id { get; set; }
 
         [StringLength(50)]

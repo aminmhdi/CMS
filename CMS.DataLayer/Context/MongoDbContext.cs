@@ -1,5 +1,8 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 using CMS.Entities.Sample;
+using CMS.Entities.Sample2;
 using CMS.ViewModel.Settings;
 using MongoDB.Driver;
 
@@ -7,7 +10,8 @@ namespace CMS.DataLayer.Context
 {
     public interface IMongoDbContext
     {
-        IMongoCollection<Sample> Sample { get; }
+        IMongoCollection<SampleModel> Sample { get; }
+        IMongoCollection<Sample2Model> Sample2 { get; }
     }
 
     public class MongoDbContext : IMongoDbContext
@@ -29,14 +33,27 @@ namespace CMS.DataLayer.Context
 
         private IMongoCollection<T> Collection<T>() where T : new()
         {
-            return _mongoDatabase.GetCollection<T>(typeof(T).Name);
+            return _mongoDatabase.GetCollection<T>(TableName<T>());
+        }
+
+        internal string TableName<T>()
+        {
+            var entity = typeof(T);
+            var tableName = entity.Name;
+
+            var customAttributes = entity.GetCustomAttributes(typeof(TableAttribute),false);
+            if (customAttributes.Any())
+                tableName = (customAttributes.First() as TableAttribute)?.Name ?? entity.Name;
+
+            return tableName;
         }
 
         #endregion
 
         #region Entities
 
-        public IMongoCollection<Sample> Sample => Collection<Sample>();
+        public IMongoCollection<SampleModel> Sample => Collection<SampleModel>();
+        public IMongoCollection<Sample2Model> Sample2 => Collection<Sample2Model>();
 
         #endregion
     }

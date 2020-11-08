@@ -5,6 +5,7 @@ using CMS.Common.DateToolkit;
 using CMS.Common.GuardToolkit;
 using CMS.DataLayer.Context;
 using CMS.Entities.Common.Enums;
+using CMS.Entities.Sample;
 using CMS.ServiceLayer.Contracts.Sample;
 using CMS.ViewModel.Sample;
 using Microsoft.AspNetCore.Http;
@@ -39,35 +40,35 @@ namespace CMS.ServiceLayer.Sample
 
         public async Task<SampleListViewModel> List(SampleSearchViewModel search)
         {
-            var filter = Builders<Entities.Sample.Sample>.Filter.Where(q => q.Status == Status.Active);
+            var filter = Builders<SampleModel>.Filter.Where(q => q.Status == Status.Active);
 
             if (search.Id.HasValue)
-                filter &= Builders<Entities.Sample.Sample>.Filter.Where(q => q.Id == search.Id.Value);
+                filter &= Builders<SampleModel>.Filter.Where(q => q.Id == search.Id.Value);
 
             if (!string.IsNullOrEmpty(search.Title))
-                filter &= Builders<Entities.Sample.Sample>.Filter.Where(q => q.Title.Contains(search.Title));
+                filter &= Builders<SampleModel>.Filter.Where(q => q.Title.Contains(search.Title));
 
             if (search.CreateFrom.HasValue)
             {
                 var createFromDateTime = search.CreateFrom.ToDateTimeFromUnix();
-                filter &= Builders<Entities.Sample.Sample>.Filter.Where(q => q.CreateDate >= createFromDateTime);
+                filter &= Builders<SampleModel>.Filter.Where(q => q.CreateDate >= createFromDateTime);
             }
 
             if (search.CreateTo.HasValue)
             {
                 var createToDateTime = search.CreateFrom.ToDateTimeFromUnix();
-                filter &= Builders<Entities.Sample.Sample>.Filter.Where(q => q.CreateDate <= createToDateTime);
+                filter &= Builders<SampleModel>.Filter.Where(q => q.CreateDate <= createToDateTime);
             }
 
             var sort = search.OrderBy switch
             {
                 "Id" => search.Order == SortOrder.Descending
-                    ? Builders<Entities.Sample.Sample>.Sort.Descending(q => q.Id)
-                    : Builders<Entities.Sample.Sample>.Sort.Ascending(q => q.Id),
+                    ? Builders<SampleModel>.Sort.Descending(q => q.Id)
+                    : Builders<SampleModel>.Sort.Ascending(q => q.Id),
                 "CreateDate" => search.Order == SortOrder.Descending
-                    ? Builders<Entities.Sample.Sample>.Sort.Descending(q => q.CreateDate)
-                    : Builders<Entities.Sample.Sample>.Sort.Ascending(q => q.CreateDate),
-                _ => Builders<Entities.Sample.Sample>.Sort.Descending(x => x.Id)
+                    ? Builders<SampleModel>.Sort.Descending(q => q.CreateDate)
+                    : Builders<SampleModel>.Sort.Ascending(q => q.CreateDate),
+                _ => Builders<SampleModel>.Sort.Descending(x => x.Id)
             };
 
             var offset = (search.PageNumber - 1) * search.PageSize;
@@ -111,7 +112,7 @@ namespace CMS.ServiceLayer.Sample
             if (viewModel == null)
                 return 0;
 
-            var model = new Entities.Sample.Sample
+            var model = new SampleModel
             {
                 Title = viewModel.Title,
                 CreateDate = DateTime.Now,
@@ -140,8 +141,8 @@ namespace CMS.ServiceLayer.Sample
             model.Title = viewModel.Title;
             model.UpdateDate = DateTime.Now;
 
-            var updateFilter = Builders<Entities.Sample.Sample>.Filter.Eq(q => q.Id, model.Id);
-            var updateTitle = Builders<Entities.Sample.Sample>.Update.Set(q => q.Title, model.Title);
+            var updateFilter = Builders<SampleModel>.Filter.Eq(q => q.Id, model.Id);
+            var updateTitle = Builders<SampleModel>.Update.Set(q => q.Title, model.Title);
             var updateDate = updateTitle.Set(q => q.UpdateDate, model.UpdateDate);
 
             await _mongoDbContext.Sample.UpdateOneAsync(updateFilter, updateDate);
@@ -156,6 +157,9 @@ namespace CMS.ServiceLayer.Sample
         public async Task<SampleViewModel> Get(int id)
         {
             var model = (await _mongoDbContext.Sample.FindAsync(q => q.Id == id)).FirstOrDefault();
+
+            if (model == null)
+                return null;
 
             var viewModel = new SampleViewModel
             {
@@ -187,8 +191,8 @@ namespace CMS.ServiceLayer.Sample
             receipt.Status = Status.Deleted;
             receipt.UpdateDate = DateTime.Now;
 
-            var updateFilter = Builders<Entities.Sample.Sample>.Filter.Eq(q => q.Id, receipt.Id);
-            var updateStatus = Builders<Entities.Sample.Sample>.Update.Set(q => q.Status, receipt.Status);
+            var updateFilter = Builders<SampleModel>.Filter.Eq(q => q.Id, receipt.Id);
+            var updateStatus = Builders<SampleModel>.Update.Set(q => q.Status, receipt.Status);
             var updateDate = updateStatus.Set(q => q.UpdateDate, receipt.UpdateDate);
 
             await _mongoDbContext.Sample.UpdateOneAsync(updateFilter, updateDate);
@@ -202,7 +206,7 @@ namespace CMS.ServiceLayer.Sample
 
         public async Task<bool> Exists()
         {
-            return await _mongoDbContext.Sample.CountDocumentsAsync(FilterDefinition<Entities.Sample.Sample>.Empty) > 0;
+            return await _mongoDbContext.Sample.CountDocumentsAsync(FilterDefinition<SampleModel>.Empty) > 0;
         }
 
         public async Task<bool> Exists(int id)

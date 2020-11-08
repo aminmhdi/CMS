@@ -26,9 +26,7 @@ namespace CMS.Controllers
             _sampleService.CheckArgumentIsNull(nameof(_sampleService));
         }
 
-        [HttpGet]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(500)]
+        [HttpGet, ProducesResponseType(200), ProducesResponseType(500)]
         public async Task<IActionResult> List(SampleSearchViewModel search)
         {
             try
@@ -43,10 +41,22 @@ namespace CMS.Controllers
             }
         }
 
-        [HttpPost]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(400)]
-        [ProducesResponseType(500)]
+        [HttpGet, ProducesResponseType(200), ProducesResponseType(500)]
+        public async Task<IActionResult> Get(int id)
+        {
+            try
+            {
+                var viewModel = await _sampleService.Get(id);
+                return Ok(viewModel);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpPost, ProducesResponseType(200), ProducesResponseType(400), ProducesResponseType(500)]
         public async Task<IActionResult> Create(SampleViewModel viewModel)
         {
             try
@@ -63,10 +73,7 @@ namespace CMS.Controllers
             }
         }
 
-        [HttpPut]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(400)]
-        [ProducesResponseType(500)]
+        [HttpPut, ProducesResponseType(200), ProducesResponseType(400), ProducesResponseType(500)]
         public async Task<IActionResult> Edit(SampleViewModel viewModel)
         {
             try
@@ -83,10 +90,7 @@ namespace CMS.Controllers
             }
         }
 
-        [HttpDelete]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(400)]
-        [ProducesResponseType(500)]
+        [HttpDelete, ProducesResponseType(200), ProducesResponseType(400), ProducesResponseType(500)]
         public async Task<IActionResult> Delete(int id)
         {
             try
